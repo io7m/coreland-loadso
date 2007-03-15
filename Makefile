@@ -201,6 +201,18 @@ clean: sysdeps_clean tests_clean
 	loadso-conf.o loadso.a loadso_close.o loadso_error.o loadso_func.o \
 	loadso_open.o loadso_sym.o mk-ctxt mk-ctxt.o 
 
+deinstall: deinstaller inst-check inst-copy inst-dir inst-link
+	./deinstaller
+deinstall-dryrun: deinstaller inst-check inst-copy inst-dir inst-link
+	./deinstaller dryrun
+install: installer inst-check inst-copy inst-dir inst-link postinstall
+	./installer
+	./postinstall
+
+install-dryrun: installer inst-check inst-copy inst-dir inst-link
+	./installer dryrun
+install-check: instchk inst-check
+	./instchk
 tests_clean:
 	(cd UNIT_TESTS && make clean)
 tests:
