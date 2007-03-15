@@ -22,6 +22,8 @@ static const struct flag flags[] = {
   { "dlibdir", FLAG_DLIBDIR, "print dynamic library directory" },
   { "slibdir", FLAG_SLIBDIR, "print static library directory" },
   { "compile", FLAG_COMPILE, "modify output for use as compiler flags" },
+  { "cflags",  FLAG_CFLAGS, "output required compiler flags" },
+  { "ldflags", FLAG_LDFLAGS, "output required linker flags" },
   { "version", FLAG_VERSION, "print library version" },
   { "help",    FLAG_HELP, "this message" },
   { "newline", FLAG_NEWLINE, "print trailing newline" },
@@ -78,6 +80,8 @@ int main(int argc, char *argv[])
     if (flag & FLAG_COMPILE) printf("-L");
     printf("%s ", ctxt_slibdir);
   }
+
+  if (flag & FLAG_LDFLAGS) printf("-lloadso ");
   if (flag & FLAG_NEWLINE) printf("\n");
   return 0;
 }

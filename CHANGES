@@ -1,2 +1,3 @@
 20070315 version: loadso 0.1
 20070315 code: fixed install
+20070315 code: added ldflags
