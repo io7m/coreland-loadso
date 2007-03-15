@@ -1,0 +1,13 @@
+info: loading shared object
+info: loading function 'test_func'
+info: loading symbol 'test_num'
+info: loading symbol 'test_str'
+info: calling function
+test_func: 0
+test_func: 127
+test_func: 255
+test_func: 32767
+info: printing symbols
+info: test_num: f0f0f0f0
+info: test_str: loadso test string
+info: closing shared object

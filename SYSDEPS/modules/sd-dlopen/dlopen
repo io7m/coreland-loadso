@@ -1,0 +1,42 @@
+#!/bin/sh
+
+fout="$1"
+sysdeps="$2"
+
+cat >> "${fout}" <<EOF
+#ifndef _SD_DLOPEN_H
+#define _SD_DLOPEN_H
+
+EOF
+
+lflag=""
+case "`uname -s | tr '/:[A-Z]' '..[a-z]'`" in
+  linux) lflag="-ldl";;
+  *) ;;
+esac
+
+sd_done=0
+${SYSDEP_CC} -o trydlopen trydlopen.c ${lflag} >/dev/null 2>&1
+if [ $? -eq 0 ]
+then
+  echo '#define HAVE_DLOPEN' >> "${fout}"
+  ${SYSDEP_CC} -o trydlfunc trydlfunc.c ${lflag} >/dev/null 2>&1
+  if [ $? -eq 0 ]
+  then
+    echo '#define HAVE_DLFUNC' >> "${fout}"
+    echo 'dlopen:dlfunc' >> "${sysdeps}"
+    sd_done=1
+  else
+    echo 'dlopen:dlsym' >> "${sysdeps}"
+    sd_done=1
+  fi
+fi
+
+echo >> "${fout}"
+echo '#endif' >> "${fout}"
+if [ ${sd_done} -eq 0 ]
+then
+  echo 'dlopen:none' >> "${sysdeps}"
+fi
+
+rm -f trydlopen trydlfunc

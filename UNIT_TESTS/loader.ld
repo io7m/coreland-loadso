@@ -1,0 +1,2 @@
+loader.o
+../loadso.a

@@ -1,0 +1,6 @@
+#!/bin/sh
+
+lib=`cat test_lib.vlb | awk -F/ '{print $NF}'`
+
+echo "-- loadso loads shared object"
+./loader "./${lib}"
