@@ -1,0 +1,1 @@
+loadso_close() will always return an error under Darwin.
