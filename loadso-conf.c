@@ -82,9 +82,9 @@ int main(int argc, char *argv[])
   }
 
   if (flag & FLAG_LDFLAGS) {
+    printf("-lloadso ");
     if (ctxt_libs_dlopen_len > 1)
       printf("%s ", ctxt_libs_dlopen);
-    printf("-lloadso ");
   }
   if (flag & FLAG_NEWLINE) printf("\n");
   return 0;
