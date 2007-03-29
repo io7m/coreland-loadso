@@ -15,8 +15,10 @@ sysdeps_clean:
 	rm -f sysdeps.out
 
 UNIT_TESTS/loader:\
-	cc-link UNIT_TESTS/loader.ld UNIT_TESTS/loader.o loadso.a 
+	cc-link UNIT_TESTS/loader.ld UNIT_TESTS/loader.lff \
+	UNIT_TESTS/loader.o loadso.a 
 	./cc-link UNIT_TESTS/loader UNIT_TESTS/loader.o loadso.a 
+UNIT_TESTS/loader.lff: libs-dlopen 
 UNIT_TESTS/loader.o:\
 	cc-compile UNIT_TESTS/loader.c loadso.h 
 	./cc-compile UNIT_TESTS/loader.c
