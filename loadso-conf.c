@@ -81,7 +81,11 @@ int main(int argc, char *argv[])
     printf("%s ", ctxt_slibdir);
   }
 
-  if (flag & FLAG_LDFLAGS) printf("-lloadso ");
+  if (flag & FLAG_LDFLAGS) {
+    if (ctxt_libs_dlopen_len > 1)
+      printf("%s ", ctxt_libs_dlopen);
+    printf("-lloadso ");
+  }
   if (flag & FLAG_NEWLINE) printf("\n");
   return 0;
 }

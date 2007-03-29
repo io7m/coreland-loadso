@@ -1,0 +1,3 @@
+ctxt/libs_dlopen.c: mk-ctxt libs-dlopen
+	rm -f ctxt/libs_dlopen.c
+	./mk-ctxt ctxt_libs_dlopen < libs-dlopen > ctxt/libs_dlopen.c

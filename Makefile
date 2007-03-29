@@ -55,9 +55,9 @@ ctxt/bindir.o:\
 	./cc-compile ctxt/bindir.c
 ctxt/ctxt.a:\
 	cc-slib ctxt/ctxt.sld ctxt/bindir.o ctxt/dlibdir.o ctxt/incdir.o \
-	ctxt/repos.o ctxt/slibdir.o ctxt/version.o 
+	ctxt/repos.o ctxt/slibdir.o ctxt/version.o ctxt/libs_dlopen.o 
 	./cc-slib ctxt/ctxt ctxt/bindir.o ctxt/dlibdir.o ctxt/incdir.o \
-	ctxt/repos.o ctxt/slibdir.o ctxt/version.o 
+	ctxt/repos.o ctxt/slibdir.o ctxt/version.o ctxt/libs_dlopen.o 
 ctxt/dlibdir.c: mk-ctxt conf-dlibdir
 	rm -f ctxt/dlibdir.c
 	./mk-ctxt ctxt_dlibdir < conf-dlibdir > ctxt/dlibdir.c
@@ -72,6 +72,13 @@ ctxt/incdir.c: mk-ctxt conf-incdir
 ctxt/incdir.o:\
 	cc-compile ctxt/incdir.c 
 	./cc-compile ctxt/incdir.c
+ctxt/libs_dlopen.c: mk-ctxt libs-dlopen
+	rm -f ctxt/libs_dlopen.c
+	./mk-ctxt ctxt_libs_dlopen < libs-dlopen > ctxt/libs_dlopen.c
+
+ctxt/libs_dlopen.o:\
+	cc-compile ctxt/libs_dlopen.c 
+	./cc-compile ctxt/libs_dlopen.c
 ctxt/repos.c: mk-ctxt conf-repos
 	rm -f ctxt/repos.c
 	./mk-ctxt ctxt_repos < conf-repos > ctxt/repos.c
@@ -193,13 +200,14 @@ clean: sysdeps_clean tests_clean
 	`cat UNIT_TESTS/test_lib.vlb` UNIT_TESTS/test_lib.vlb conf-cctype \
 	conf-ldtype conf-picflag conf-systype ctxt/bindir.c ctxt/bindir.o \
 	ctxt/ctxt.a ctxt/dlibdir.c ctxt/dlibdir.o ctxt/incdir.c \
-	ctxt/incdir.o ctxt/repos.c ctxt/repos.o ctxt/slibdir.c \
-	ctxt/slibdir.o ctxt/version.c ctxt/version.o deinstaller \
-	deinstaller.o inst-check inst-check.o inst-copy inst-copy.o inst-dir \
-	inst-dir.o inst-link inst-link.o install_core.o install_error.o \
-	installer installer.o instchk instchk.o insthier.o loadso-conf \
-	loadso-conf.o loadso.a loadso_close.o loadso_error.o loadso_func.o \
-	loadso_open.o loadso_sym.o mk-ctxt mk-ctxt.o 
+	ctxt/incdir.o ctxt/libs_dlopen.c ctxt/libs_dlopen.o ctxt/repos.c \
+	ctxt/repos.o ctxt/slibdir.c ctxt/slibdir.o ctxt/version.c \
+	ctxt/version.o deinstaller deinstaller.o inst-check inst-check.o \
+	inst-copy inst-copy.o inst-dir inst-dir.o inst-link inst-link.o \
+	install_core.o install_error.o installer installer.o instchk \
+	instchk.o insthier.o loadso-conf loadso-conf.o loadso.a \
+	loadso_close.o loadso_error.o loadso_func.o loadso_open.o \
+	loadso_sym.o mk-ctxt mk-ctxt.o 
 
 deinstall: deinstaller inst-check inst-copy inst-dir inst-link
 	./deinstaller
