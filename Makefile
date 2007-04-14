@@ -14,6 +14,9 @@ sysdeps_clean:
 	(cd SYSDEPS && make clean)
 	rm -f sysdeps.out
 
+_sd_dlopen.h: sysdeps.out
+libs-dlopen: sysdeps.out
+
 UNIT_TESTS/loader:\
 	cc-link UNIT_TESTS/loader.ld UNIT_TESTS/loader.lff \
 	UNIT_TESTS/loader.o loadso.a 
@@ -197,19 +200,20 @@ mk-libname: conf-systype conf-sosuffix
 mk-picflag: conf-cctype conf-systype 
 mk-sosuffix: conf-systype 
 mk-systype: conf-cc 
-clean: sysdeps_clean tests_clean 
+clean-all: sysdeps_clean tests_clean obj_clean 
+clean: obj_clean
+obj_clean: 
 	rm -f UNIT_TESTS/loader UNIT_TESTS/loader.o UNIT_TESTS/test_lib.o \
-	`cat UNIT_TESTS/test_lib.vlb` UNIT_TESTS/test_lib.vlb conf-cctype \
-	conf-ldtype conf-picflag conf-systype ctxt/bindir.c ctxt/bindir.o \
-	ctxt/ctxt.a ctxt/dlibdir.c ctxt/dlibdir.o ctxt/incdir.c \
-	ctxt/incdir.o ctxt/libs_dlopen.c ctxt/libs_dlopen.o ctxt/repos.c \
-	ctxt/repos.o ctxt/slibdir.c ctxt/slibdir.o ctxt/version.c \
-	ctxt/version.o deinstaller deinstaller.o inst-check inst-check.o \
-	inst-copy inst-copy.o inst-dir inst-dir.o inst-link inst-link.o \
-	install_core.o install_error.o installer installer.o instchk \
-	instchk.o insthier.o loadso-conf loadso-conf.o loadso.a \
+	`cat UNIT_TESTS/test_lib.vlb` UNIT_TESTS/test_lib.vlb ctxt/bindir.c \
+	ctxt/bindir.o ctxt/ctxt.a ctxt/dlibdir.c ctxt/dlibdir.o \
+	ctxt/incdir.c ctxt/incdir.o ctxt/libs_dlopen.c ctxt/libs_dlopen.o \
+	ctxt/repos.c ctxt/repos.o ctxt/slibdir.c ctxt/slibdir.o \
+	ctxt/version.c ctxt/version.o deinstaller deinstaller.o inst-check \
+	inst-check.o inst-copy inst-copy.o inst-dir inst-dir.o inst-link \
+	inst-link.o install_core.o install_error.o installer installer.o \
+	instchk instchk.o insthier.o loadso-conf loadso-conf.o loadso.a \
 	loadso_close.o loadso_error.o loadso_func.o loadso_open.o \
-	loadso_sym.o mk-ctxt mk-ctxt.o 
+	loadso_sym.o 
 
 deinstall: deinstaller inst-check inst-copy inst-dir inst-link
 	./deinstaller
