@@ -3,4 +3,4 @@
 ( for f in *.test
   do
     echo $f | awk -F. '{print $1}' 
-  done ) | fmt -w 50
+  done )
