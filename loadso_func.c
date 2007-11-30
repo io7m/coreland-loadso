@@ -8,7 +8,7 @@ static int loadso_func_dlopen(void *h, const char *sym, loadso_fp *func)
 #if defined(HAVE_DLFUNC)
   f = (loadso_fp) dlfunc(h, sym);
 #else
-  f = (loadso_fp) dlsym(h, sym);
+  f = dlsym(h, sym);
 #endif
   if (!f) {
     loadso_err = dlerror();
