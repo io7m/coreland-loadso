@@ -285,16 +285,16 @@ clean-all: sysdeps_clean tests_clean obj_clean
 clean: obj_clean
 obj_clean: 
 	rm -f UNIT_TESTS/loader UNIT_TESTS/loader.o UNIT_TESTS/test_lib.o \
-	`cat UNIT_TESTS/test_lib.vlb` UNIT_TESTS/test_lib.vlb conf-cctype \
-	conf-ldtype conf-systype ctxt/bindir.c ctxt/bindir.o ctxt/ctxt.a \
-	ctxt/dlibdir.c ctxt/dlibdir.o ctxt/incdir.c ctxt/incdir.o \
-	ctxt/libs_dlopen.c ctxt/libs_dlopen.o ctxt/repos.c ctxt/repos.o \
-	ctxt/slibdir.c ctxt/slibdir.o ctxt/version.c ctxt/version.o \
-	deinstaller deinstaller.o inst-check inst-check.o inst-copy \
-	inst-copy.o inst-dir inst-dir.o inst-link inst-link.o install_core.o \
-	install_error.o installer installer.o instchk instchk.o insthier.o \
-	loadso-conf loadso-conf.o loadso.a loadso_close.o loadso_error.o \
-	loadso_func.o loadso_open.o loadso_sym.o 
+	`cat UNIT_TESTS/test_lib.vlb` UNIT_TESTS/test_lib.vlb conf-dlflag \
+	ctxt/bindir.c ctxt/bindir.o ctxt/ctxt.a ctxt/dlibdir.c \
+	ctxt/dlibdir.o ctxt/incdir.c ctxt/incdir.o ctxt/libs_dlopen.c \
+	ctxt/libs_dlopen.o ctxt/repos.c ctxt/repos.o ctxt/slibdir.c \
+	ctxt/slibdir.o ctxt/version.c ctxt/version.o deinstaller \
+	deinstaller.o inst-check inst-check.o inst-copy inst-copy.o inst-dir \
+	inst-dir.o inst-link inst-link.o install_core.o install_error.o \
+	installer installer.o instchk instchk.o insthier.o loadso-conf \
+	loadso-conf.o loadso.a loadso_close.o loadso_error.o loadso_func.o \
+	loadso_open.o loadso_sym.o mk-ctxt 
 
 deinstall: deinstaller inst-check inst-copy inst-dir inst-link
 	./deinstaller
