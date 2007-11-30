@@ -3,7 +3,7 @@
 
 #include "sd_dlopen.h"
 
-typedef void *(*loadso_fp)(void *);
+typedef void * (*loadso_fp)(void *);
 
 int loadso_open(const char *, void **);
 int loadso_sym(void *, const char *, void **);

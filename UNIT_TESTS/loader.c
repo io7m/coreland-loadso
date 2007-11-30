@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
 
   printf("info: printing symbols\n");
 
-  printf("info: test_num: %x\n", test_num);
+  printf("info: test_num: %lx\n", test_num);
   printf("info: test_str: %s\n", test_str);
 
   printf("info: closing shared object\n");
