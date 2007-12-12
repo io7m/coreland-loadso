@@ -1,4 +1,5 @@
 #!/bin/sh
+# $Id: mk-dlflag 2909 2007-12-12 21:21:47Z m0 $
 
 #
 # Print additional compiler flags necessary to compile object files that
