@@ -2,3 +2,4 @@
 20070315 code: fixed install
 20070315 code: added ldflags
 20070608 code: loadso-conf.c from common source.
+20080115 code: updated inst-check.c
