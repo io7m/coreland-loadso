@@ -1,5 +1,4 @@
 #!/bin/sh
-# $Id: cc-dlib 2909 2007-12-12 21:21:47Z m0 $
 
 if [ $# -lt 2 ]
 then
@@ -96,7 +95,10 @@ case "${LD_TYPE}" in
         release=`uname -r | awk -F. '{print $1}'`
         if [ ${release} -gt 7 ]
         then
+          # the list of darwin compiler bugs makes impressive reading
           ${LD} -dynamiclib \
+                -flat_namespace \
+                -undefined suppress \
                 -current_version "${ver}" \
                 -install_name "${libname}" \
                 -o "${libname}" ${1+"$@"} ${LDFLAGS}
