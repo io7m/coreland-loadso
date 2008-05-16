@@ -7,12 +7,13 @@ static int loadso_func_dlopen(void *h, const char *sym, loadso_fp *func)
   loadso_fp f;
   ptr_uint p;
 
+/* subvert C99 object/function pointer <-> type rules... unfortunately */
 #if defined(HAVE_DLFUNC)
   f = (loadso_fp) dlfunc(h, sym);
   p = 0;
 #else
-  p = dlsym (h, sym);
-  f = p;
+  p = (ptr_uint) dlsym (h, sym);
+  f = (loadso_fp) p;
 #endif
 
   if (!f) {
