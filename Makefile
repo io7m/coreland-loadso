@@ -40,15 +40,22 @@ _sd_dlopen.h:
 	@echo SYSDEPS sd-dlopen run create libs-dlopen _sd_dlopen.h 
 	@(cd SYSDEPS/modules/sd-dlopen && ./run)
 libs-dlopen: _sd_dlopen.h
+_sd-ptr_uint.h:
+	@echo SYSDEPS sd-ptr_uint run create _sd-ptr_uint.h 
+	@(cd SYSDEPS/modules/sd-ptr_uint && ./run)
 
 
 sd-dlopen_clean:
 	@echo SYSDEPS sd-dlopen clean libs-dlopen _sd_dlopen.h 
 	@(cd SYSDEPS/modules/sd-dlopen && ./clean)
+sd-ptr_uint_clean:
+	@echo SYSDEPS sd-ptr_uint clean _sd-ptr_uint.h 
+	@(cd SYSDEPS/modules/sd-ptr_uint && ./clean)
 
 
 sysdeps_clean:\
 sd-dlopen_clean \
+sd-ptr_uint_clean \
 
 
 # -- SYSDEPS end
@@ -89,7 +96,7 @@ cc-slib:\
 conf-systype
 
 conf-cctype:\
-conf-cc conf-cc mk-cctype
+conf-cc mk-cctype
 	./mk-cctype > conf-cctype.tmp && mv conf-cctype.tmp conf-cctype
 
 conf-dlflag:\
@@ -97,7 +104,7 @@ mk-dlflag
 	./mk-dlflag > conf-dlflag.tmp && mv conf-dlflag.tmp conf-dlflag
 
 conf-ldtype:\
-conf-ld conf-ld mk-ldtype
+conf-ld mk-ldtype
 	./mk-ldtype > conf-ldtype.tmp && mv conf-ldtype.tmp conf-ldtype
 
 conf-sosuffix:\
@@ -277,7 +284,7 @@ cc-compile loadso_error.c loadso.h
 	./cc-compile loadso_error.c
 
 loadso_func.o:\
-cc-compile loadso_func.c loadso.h
+cc-compile loadso_func.c _sd-ptr_uint.h loadso.h
 	./cc-compile loadso_func.c
 
 loadso_open.o:\

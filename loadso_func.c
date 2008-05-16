@@ -1,15 +1,20 @@
+#include "_sd-ptr_uint.h"
 #include "loadso.h"
 
 #if defined(HAVE_DLOPEN)
 static int loadso_func_dlopen(void *h, const char *sym, loadso_fp *func)
 {
   loadso_fp f;
+  ptr_uint p;
 
 #if defined(HAVE_DLFUNC)
   f = (loadso_fp) dlfunc(h, sym);
+  p = 0;
 #else
-  f = dlsym(h, sym);
+  p = dlsym (h, sym);
+  f = p;
 #endif
+
   if (!f) {
     loadso_err = dlerror();
     return 0;
