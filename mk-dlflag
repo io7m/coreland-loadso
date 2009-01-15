@@ -1,36 +1,49 @@
 #!/bin/sh
 
+fatal()
+{
+  echo "mk-dlflag: fatal: $1" 1>&2
+  exit 1
+}
+
+#
+# check if new base dir was specified
+#
+
+BASE_DIR="."
+if [ $# -eq 2 ]
+then
+  BASE_DIR=`echo "$1" | sed 's/^@//g'`
+  shift
+fi
+
 #
 # Print additional compiler flags necessary to compile object files that
 # can be used for shared libraries.
 #
 
-if [ -f conf-x-cctype ]
+if [ -f "${BASE_DIR}/conf-x-cctype" ]
 then
-  CC_TYPE=`head -n 1 conf-x-cctype`
+  CC_TYPE=`head -n 1 ${BASE_DIR}/conf-x-cctype`
   if [ $? -ne 0 ]
   then
-    echo "fatal: could not read conf-x-cctype" 1>&2
-    exit 1
+    fatal "could not read ${BASE_DIR}/conf-x-cctype"
   fi
-  SYS_TYPE=`head -n 1 conf-x-systype`
+  SYS_TYPE=`head -n 1 ${BASE_DIR}/conf-x-systype`
   if [ $? -ne 0 ]
   then
-    echo "fatal: could not read conf-x-systype" 1>&2
-    exit 1
+    fatal "could not read ${BASE_DIR}/conf-x-systype"
   fi
 else
-  CC_TYPE=`head -n 1 conf-cctype`
+  CC_TYPE=`head -n 1 ${BASE_DIR}/conf-cctype`
   if [ $? -ne 0 ]
   then
-    echo "fatal: could not read conf-cctype" 1>&2
-    exit 1
+    fatal "could not read ${BASE_DIR}/conf-cctype"
   fi
-  SYS_TYPE=`head -n 1 conf-systype`
+  SYS_TYPE=`head -n 1 ${BASE_DIR}/conf-systype`
   if [ $? -ne 0 ]
   then
-    echo "fatal: could not read conf-systype" 1>&2
-    exit 1
+    fatal "could not read ${BASE_DIR}/conf-systype"
   fi
 fi
 
@@ -64,7 +77,6 @@ case "${CC_TYPE}" in
     echo '-KPIC'
     ;;
   *)
-    echo 'fatal: unknown compiler - cannot print dynamic library flags' 1>&2
-    exit 1
+    fatal 'unknown compiler - cannot print dynamic library flags'
     ;;
 esac

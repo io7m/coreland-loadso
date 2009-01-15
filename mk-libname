@@ -1,23 +1,38 @@
 #!/bin/sh
-# $Id$
+
+fatal()
+{
+  echo "mk-libname: fatal: $1" 1>&2
+  exit 1
+}
 
 if [ $# -lt 1 ]
 then
-  echo "usage: basename" 1>&2
+  echo "mk-libname: usage: basename" 1>&2
   exit 1
 fi
 
-SYS_TYPE=`head -n 1 conf-systype`
-if [ $? -ne 0 ]
+#
+# check if base directory was specified
+#
+
+BASE_DIR="."
+echo "$1" | grep '^@' 2>&1 >/dev/null
+if [ $? -eq 0 ]
 then
-  echo "fatal: could not read conf-systype" 1>&2
-  exit 1
+  BASE_DIR=`echo $1 | sed 's/^@//g'`
+  shift
 fi
-SO_SUFFIX=`head -n 1 conf-sosuffix`
+
+SYS_TYPE=`head -n 1 "${BASE_DIR}/conf-systype"`
 if [ $? -ne 0 ]
 then
-  echo "fatal: could not read conf-sosuffix" 1>&2
-  exit 1
+  fatal "could not read ${BASE_DIR}/conf-systype"
+fi
+SO_SUFFIX=`head -n 1 "${BASE_DIR}/conf-sosuffix"`
+if [ $? -ne 0 ]
+then
+  fatal "could not read ${BASE_DIR}/conf-sosuffix"
 fi
 
 main="$1"
