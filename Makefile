@@ -8,7 +8,7 @@ UNIT_TESTS/test_lib.vlb ctxt/bindir.o ctxt/ctxt.a ctxt/dlibdir.o ctxt/incdir.o \
 ctxt/libs_dlopen.o ctxt/repos.o ctxt/slibdir.o ctxt/version.o deinstaller \
 deinstaller.o install-core.o install-error.o install-posix.o install-win32.o \
 install.a installer installer.o instchk instchk.o insthier.o loadso-conf \
-loadso-conf.o loadso.a loadso.o loadso_dlopen.o
+loadso-conf.o loadso.a loadso.o loadso_dlopen.o loadso_win32.o
 
 # Mkf-deinstall
 deinstall: deinstaller conf-sosuffix
@@ -255,8 +255,8 @@ cc-compile loadso-conf.c ctxt.h _sd_sysinfo.h
 	./cc-compile loadso-conf.c
 
 loadso.a:\
-cc-slib loadso.sld loadso.o loadso_dlopen.o
-	./cc-slib loadso loadso.o loadso_dlopen.o
+cc-slib loadso.sld loadso.o loadso_dlopen.o loadso_win32.o
+	./cc-slib loadso loadso.o loadso_dlopen.o loadso_win32.o
 
 loadso.h:\
 sd_dlopen.h
@@ -268,6 +268,10 @@ cc-compile loadso.c loadso.h
 loadso_dlopen.o:\
 cc-compile loadso_dlopen.c loadso.h _sd_ptr_uint.h
 	./cc-compile loadso_dlopen.c
+
+loadso_win32.o:\
+cc-compile loadso_win32.c _sd_sysinfo.h loadso.h _sd_ptr_uint.h
+	./cc-compile loadso_win32.c
 
 mk-cctype:\
 conf-cc conf-systype
@@ -307,7 +311,7 @@ obj_clean:
 	ctxt/slibdir.o ctxt/version.c ctxt/version.o deinstaller deinstaller.o \
 	install-core.o install-error.o install-posix.o install-win32.o install.a \
 	installer installer.o instchk instchk.o insthier.o loadso-conf loadso-conf.o \
-	loadso.a loadso.o loadso_dlopen.o
+	loadso.a loadso.o loadso_dlopen.o loadso_win32.o
 ext_clean:
 	rm -f conf-cctype conf-dlflag conf-ldtype conf-sosuffix conf-systype mk-ctxt
 
