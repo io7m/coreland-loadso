@@ -62,7 +62,7 @@ loadso_dlopen_function (loadso_handle_t handle, const char *symbol, loadso_point
 }
 
 int
-loadso_dlopen_open (const char *file, void **handle)
+loadso_dlopen_open (const char *file, loadso_handle_t *handle)
 {
   void *raw_handle;
 
