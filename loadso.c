@@ -22,7 +22,7 @@ loadso_set_error (const char *e)
 }
 
 int
-loadso_function (void *handle, const char *symbol, loadso_pointer_t *function)
+loadso_function (loadso_handle_t handle, const char *symbol, loadso_pointer_t *function)
 {
   assert (handle   != NULL);
   assert (symbol   != NULL);
@@ -37,7 +37,7 @@ loadso_function (void *handle, const char *symbol, loadso_pointer_t *function)
 }
 
 int
-loadso_open (const char *file, void **handle)
+loadso_open (const char *file, loadso_handle_t *handle)
 {
   assert (file   != NULL);
   assert (handle != NULL);
@@ -51,7 +51,7 @@ loadso_open (const char *file, void **handle)
 }
 
 int
-loadso_symbol (void *handle, const char *symbol, void **pointer)
+loadso_symbol (loadso_handle_t handle, const char *symbol, void **pointer)
 {
   assert (handle  != NULL);
   assert (symbol  != NULL);
@@ -66,7 +66,7 @@ loadso_symbol (void *handle, const char *symbol, void **pointer)
 }
 
 int
-loadso_close (void *handle)
+loadso_close (loadso_handle_t handle)
 {
   assert (handle != NULL);
 

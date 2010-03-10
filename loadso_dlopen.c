@@ -13,7 +13,7 @@
 #include "_sd_ptr_uint.h"
 
 int
-loadso_dlopen_close (void *handle)
+loadso_dlopen_close (loadso_handle_t handle)
 {
   if (dlclose (handle) != 0) {
     loadso_set_error (dlerror ());
@@ -23,7 +23,7 @@ loadso_dlopen_close (void *handle)
 }
 
 int
-loadso_dlopen_symbol (void *handle, const char *symbol, void **pointer)
+loadso_dlopen_symbol (loadso_handle_t handle, const char *symbol, void **pointer)
 {
   void *address;
 
@@ -38,7 +38,7 @@ loadso_dlopen_symbol (void *handle, const char *symbol, void **pointer)
 }
 
 int
-loadso_dlopen_function (void *handle, const char *symbol, loadso_pointer_t *function)
+loadso_dlopen_function (loadso_handle_t handle, const char *symbol, loadso_pointer_t *function)
 {
   loadso_pointer_t pointer;
   sd_ptr_uint address;

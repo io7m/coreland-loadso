@@ -8,3 +8,4 @@
 20100310 code: loadso_sym -> loadso_symbol.
 20100310 code: loadso_func -> loadso_function.
 20100310 code: loadso_fp -> loadso_pointer_t.
+20100310 code: void * -> loadso_handle_t.
