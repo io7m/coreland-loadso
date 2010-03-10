@@ -5,7 +5,7 @@
 
 #if defined(SD_HAVE_DLOPEN)
 static int
-loadso_sym_dlopen (void *handle, const char *symbol, void **pointer)
+loadso_symbol_dlopen (void *handle, const char *symbol, void **pointer)
 {
   void *address;
 
@@ -21,14 +21,14 @@ loadso_sym_dlopen (void *handle, const char *symbol, void **pointer)
 #endif
 
 int
-loadso_sym (void *handle, const char *symbol, void **pointer)
+loadso_symbol (void *handle, const char *symbol, void **pointer)
 {
   assert (handle  != NULL);
   assert (symbol  != NULL);
   assert (pointer != NULL);
 
 #if defined(SD_HAVE_DLOPEN)
-  return loadso_sym_dlopen (handle, symbol, pointer);
+  return loadso_symbol_dlopen (handle, symbol, pointer);
 #endif
 
   loadso_set_error ("function not implemented on this platform");

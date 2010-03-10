@@ -1,6 +1,7 @@
 #include <stddef.h>
 #include <assert.h>
 
+#include "_sd_sysinfo.h"
 #include "loadso.h"
 
 #if defined(SD_HAVE_DLOPEN)

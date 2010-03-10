@@ -5,3 +5,6 @@
 20080115 code: updated inst-check.c
 20100310 code: new SYSDEPS.
 20100310 code: style checks, assertions, loadso_get_error().
+20100310 code: loadso_sym -> loadso_symbol.
+20100310 code: loadso_func -> loadso_function.
+20100310 code: loadso_fp -> loadso_pointer_t.
