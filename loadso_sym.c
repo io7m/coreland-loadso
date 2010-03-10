@@ -1,25 +1,36 @@
+#include <assert.h>
+#include <stddef.h>
+
 #include "loadso.h"
 
 #if defined(HAVE_DLOPEN)
-static int loadso_sym_dlopen(void *h, const char *sym, void **ptr)
+static int
+loadso_sym_dlopen (void *handle, const char *symbol, void **pointer)
 {
-  void *p;
-  p = dlsym(h, sym);
-  if (!p) {
-    loadso_err = dlerror();
+  void *address;
+
+  address = dlsym (handle, symbol);
+  if (address == NULL) {
+    loadso_set_error (dlerror());
     return 0;
   }
-  *ptr = p;
+
+  *pointer = address;
   return 1;
 }
 #endif
 
-int loadso_sym(void *h, const char *sym, void **ptr)
+int
+loadso_sym (void *handle, const char *symbol, void **pointer)
 {
+  assert (handle  != NULL);
+  assert (symbol  != NULL);
+  assert (pointer != NULL);
+
 #if defined(HAVE_DLOPEN)
-  return loadso_sym_dlopen(h, sym, ptr);
+  return loadso_sym_dlopen (handle, symbol, pointer);
 #endif
 
-  loadso_err = "function not implemented on this platform";
+  loadso_set_error ("function not implemented on this platform");
   return 0;
 }

@@ -1,36 +1,46 @@
+#include <assert.h>
+#include <stddef.h>
+
 #include "_sd-ptr_uint.h"
 #include "loadso.h"
 
 #if defined(HAVE_DLOPEN)
-static int loadso_func_dlopen(void *h, const char *sym, loadso_fp *func)
+static int
+loadso_func_dlopen (void *handle, const char *symbol, loadso_fp *func)
 {
-  loadso_fp f;
-  ptr_uint p;
+  loadso_fp pointer;
+  ptr_uint address;
 
 /* subvert C99 object/function pointer <-> type rules... unfortunately */
 #if defined(HAVE_DLFUNC)
-  f = (loadso_fp) dlfunc(h, sym);
-  p = 0;
+  pointer = (loadso_fp) dlfunc (handle, symbol);
+  address = 0;
 #else
-  p = (ptr_uint) dlsym (h, sym);
-  f = (loadso_fp) p;
+  address = (ptr_uint) dlsym (handle, symbol);
+  pointer = (loadso_fp) address;
 #endif
 
-  if (!f) {
-    loadso_err = dlerror();
+  if (pointer == NULL) {
+    loadso_set_error (dlerror());
     return 0;
   }
-  *func = f;
+
+  *func = pointer;
   return 1;
 }
 #endif
 
-int loadso_func(void *h, const char *sym, loadso_fp *func)
+int
+loadso_func (void *handle, const char *symbol, loadso_fp *func)
 {
+  assert (handle != NULL);
+  assert (symbol != NULL);
+  assert (func   != NULL);
+
 #if defined(HAVE_DLOPEN)
-  return loadso_func_dlopen(h, sym, func);
+  return loadso_func_dlopen (handle, symbol, func);
 #endif
 
-  loadso_err = "function not implemented on this platform";
+  loadso_set_error ("function not implemented on this platform");
   return 0;
 }

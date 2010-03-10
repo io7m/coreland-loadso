@@ -1,22 +1,29 @@
+#include <assert.h>
+#include <stddef.h>
+
 #include "loadso.h"
 
 #if defined(HAVE_DLOPEN)
-static int loadso_close_dlopen(void *h)
+static int
+loadso_close_dlopen (void *handle)
 {
-  if (dlclose(h) != 0) {
-    loadso_err = dlerror();
+  if (dlclose (handle) != 0) {
+    loadso_set_error (dlerror ());
     return 0;
   } else
     return 1;
 }
 #endif
 
-int loadso_close(void *h)
+int
+loadso_close (void *handle)
 {
+  assert (handle != NULL);
+
 #if defined(HAVE_DLOPEN)
-  return loadso_close_dlopen(h);
+  return loadso_close_dlopen (handle);
 #endif
 
-  loadso_err = "function not implemented on this platform";
+  loadso_set_error ("function not implemented on this platform");
   return 0;
 }
