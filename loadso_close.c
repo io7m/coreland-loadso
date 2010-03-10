@@ -3,7 +3,7 @@
 
 #include "loadso.h"
 
-#if defined(HAVE_DLOPEN)
+#if defined(SD_HAVE_DLOPEN)
 static int
 loadso_close_dlopen (void *handle)
 {
@@ -20,7 +20,7 @@ loadso_close (void *handle)
 {
   assert (handle != NULL);
 
-#if defined(HAVE_DLOPEN)
+#if defined(SD_HAVE_DLOPEN)
   return loadso_close_dlopen (handle);
 #endif
 

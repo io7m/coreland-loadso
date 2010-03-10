@@ -5,12 +5,12 @@
 
 typedef void * (*loadso_fp)(void *);
 
-int loadso_open(const char *, void **);
-int loadso_sym(void *, const char *, void **);
-int loadso_func(void *, const char *, loadso_fp *);
-int loadso_close(void *);
-const char *loadso_error(void);
+int loadso_open (const char *, void **);
+int loadso_sym (void *, const char *, void **);
+int loadso_func (void *, const char *, loadso_fp *);
+int loadso_close (void *);
 
-extern const char *loadso_err;
+const char *loadso_error (void);
+void loadso_set_error (const char *);
 
 #endif

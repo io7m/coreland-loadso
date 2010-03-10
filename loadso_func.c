@@ -1,22 +1,22 @@
 #include <assert.h>
 #include <stddef.h>
 
-#include "_sd-ptr_uint.h"
+#include "_sd_ptr_uint.h"
 #include "loadso.h"
 
-#if defined(HAVE_DLOPEN)
+#if defined(SD_HAVE_DLOPEN)
 static int
 loadso_func_dlopen (void *handle, const char *symbol, loadso_fp *func)
 {
   loadso_fp pointer;
-  ptr_uint address;
+  sd_ptr_uint address;
 
 /* subvert C99 object/function pointer <-> type rules... unfortunately */
-#if defined(HAVE_DLFUNC)
+#if defined(SD_HAVE_DLFUNC)
   pointer = (loadso_fp) dlfunc (handle, symbol);
   address = 0;
 #else
-  address = (ptr_uint) dlsym (handle, symbol);
+  address = (sd_ptr_uint) dlsym (handle, symbol);
   pointer = (loadso_fp) address;
 #endif
 
@@ -37,7 +37,7 @@ loadso_func (void *handle, const char *symbol, loadso_fp *func)
   assert (symbol != NULL);
   assert (func   != NULL);
 
-#if defined(HAVE_DLOPEN)
+#if defined(SD_HAVE_DLOPEN)
   return loadso_func_dlopen (handle, symbol, func);
 #endif
 

@@ -3,7 +3,7 @@
 
 #include "loadso.h"
 
-#if defined(HAVE_DLOPEN)
+#if defined(SD_HAVE_DLOPEN)
 static int
 loadso_sym_dlopen (void *handle, const char *symbol, void **pointer)
 {
@@ -27,7 +27,7 @@ loadso_sym (void *handle, const char *symbol, void **pointer)
   assert (symbol  != NULL);
   assert (pointer != NULL);
 
-#if defined(HAVE_DLOPEN)
+#if defined(SD_HAVE_DLOPEN)
   return loadso_sym_dlopen (handle, symbol, pointer);
 #endif
 

@@ -3,8 +3,8 @@
 
 #include "_sd_dlopen.h"
 
-#ifdef HAVE_DLOPEN
-  #include <dlfcn.h>
+#ifdef SD_HAVE_DLOPEN
+#include <dlfcn.h>
 #endif
 
 #endif
