@@ -1,15 +1,16 @@
 #include <stdio.h>
 #include "../loadso.h"
 
-int main(int argc, char *argv[])
+int
+main (int argc, char *argv[])
 {
   void *lib;
   void *sym;
-  loadso_fp func;
+  loadso_pointer_t func;
   void (*test_func)(unsigned int);
   unsigned long test_num;
   const char *test_str;
-  
+
   if (argc < 2) return 112;
 
   printf("info: loading shared object\n");
@@ -19,22 +20,22 @@ int main(int argc, char *argv[])
   }
 
   printf("info: loading function 'test_func'\n");
-  if (!loadso_func(lib, "test_func", &func)) {
+  if (!loadso_function (lib, "test_func", &func)) {
     printf("error: loadso_func: %s\n", loadso_error());
     return 112;
   }
   test_func = (void (*)(unsigned int)) func;
 
   printf("info: loading symbol 'test_num'\n");
-  if (!loadso_sym(lib, "test_num", &sym)) {
-    printf("error: loadso_sym: %s\n", loadso_error());
+  if (!loadso_symbol (lib, "test_num", &sym)) {
+    printf("error: loadso_symbol: %s\n", loadso_error());
     return 112;
   }
   test_num = * ((unsigned long *) sym);
 
   printf("info: loading symbol 'test_str'\n");
-  if (!loadso_sym(lib, "test_str", &sym)) {
-    printf("error: loadso_sym: %s\n", loadso_error());
+  if (!loadso_symbol (lib, "test_str", &sym)) {
+    printf("error: loadso_symbol: %s\n", loadso_error());
     return 112;
   }
   test_str = * (const char **) sym;
@@ -47,7 +48,6 @@ int main(int argc, char *argv[])
   test_func(32767);
 
   printf("info: printing symbols\n");
-
   printf("info: test_num: %lx\n", test_num);
   printf("info: test_str: %s\n", test_str);
 

@@ -8,8 +8,7 @@ UNIT_TESTS/test_lib.vlb ctxt/bindir.o ctxt/ctxt.a ctxt/dlibdir.o ctxt/incdir.o \
 ctxt/libs_dlopen.o ctxt/repos.o ctxt/slibdir.o ctxt/version.o deinstaller \
 deinstaller.o install-core.o install-error.o install-posix.o install-win32.o \
 install.a installer installer.o instchk instchk.o insthier.o loadso-conf \
-loadso-conf.o loadso.a loadso_close.o loadso_error.o loadso_func.o \
-loadso_open.o loadso_sym.o
+loadso-conf.o loadso.a loadso.o loadso_dlopen.o
 
 # Mkf-deinstall
 deinstall: deinstaller conf-sosuffix
@@ -256,33 +255,19 @@ cc-compile loadso-conf.c ctxt.h _sd_sysinfo.h
 	./cc-compile loadso-conf.c
 
 loadso.a:\
-cc-slib loadso.sld loadso_close.o loadso_error.o loadso_func.o loadso_open.o \
-loadso_sym.o
-	./cc-slib loadso loadso_close.o loadso_error.o loadso_func.o loadso_open.o \
-	loadso_sym.o
+cc-slib loadso.sld loadso.o loadso_dlopen.o
+	./cc-slib loadso loadso.o loadso_dlopen.o
 
 loadso.h:\
 sd_dlopen.h
 
-loadso_close.o:\
-cc-compile loadso_close.c loadso.h
-	./cc-compile loadso_close.c
+loadso.o:\
+cc-compile loadso.c loadso.h
+	./cc-compile loadso.c
 
-loadso_error.o:\
-cc-compile loadso_error.c loadso.h
-	./cc-compile loadso_error.c
-
-loadso_func.o:\
-cc-compile loadso_func.c _sd_ptr_uint.h loadso.h
-	./cc-compile loadso_func.c
-
-loadso_open.o:\
-cc-compile loadso_open.c loadso.h
-	./cc-compile loadso_open.c
-
-loadso_sym.o:\
-cc-compile loadso_sym.c loadso.h
-	./cc-compile loadso_sym.c
+loadso_dlopen.o:\
+cc-compile loadso_dlopen.c loadso.h _sd_ptr_uint.h
+	./cc-compile loadso_dlopen.c
 
 mk-cctype:\
 conf-cc conf-systype
@@ -322,7 +307,7 @@ obj_clean:
 	ctxt/slibdir.o ctxt/version.c ctxt/version.o deinstaller deinstaller.o \
 	install-core.o install-error.o install-posix.o install-win32.o install.a \
 	installer installer.o instchk instchk.o insthier.o loadso-conf loadso-conf.o \
-	loadso.a loadso_close.o loadso_error.o loadso_func.o loadso_open.o loadso_sym.o
+	loadso.a loadso.o loadso_dlopen.o
 ext_clean:
 	rm -f conf-cctype conf-dlflag conf-ldtype conf-sosuffix conf-systype mk-ctxt
 
