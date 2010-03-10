@@ -3,3 +3,5 @@
 20070315 code: added ldflags
 20070608 code: loadso-conf.c from common source.
 20080115 code: updated inst-check.c
+20100310 code: new SYSDEPS.
+20100310 code: style checks, assertions, loadso_get_error().
