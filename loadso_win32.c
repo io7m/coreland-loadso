@@ -1,8 +1,5 @@
 #define LOADSO_IMPLEMENTATION 1
 
-#include <assert.h>
-#include <stddef.h>
-
 #include "_sd_sysinfo.h"
 #include "loadso.h"
 
@@ -11,8 +8,11 @@
  */
 
 #if SD_SYSINFO_OS == SD_SYSINFO_OS_MS_WINDOWS
-#include <windows.h>
 #include "_sd_ptr_uint.h"
+
+#include <windows.h>
+#include <assert.h>
+#include <stddef.h>
 
 static const char *
 loadso_win32_error_message (void)

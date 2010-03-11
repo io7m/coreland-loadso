@@ -1,9 +1,7 @@
 #define LOADSO_IMPLEMENTATION 1
 
-#include <assert.h>
-#include <stddef.h>
-
 #include "loadso.h"
+#include "_sd_dlopen.h"
 
 /*
  * dlopen/dlfunc
@@ -11,6 +9,10 @@
 
 #if defined(SD_HAVE_DLOPEN)
 #include "_sd_ptr_uint.h"
+
+#include <assert.h>
+#include <dlfcn.h>
+#include <stddef.h>
 
 int
 loadso_dlopen_close (loadso_handle_t handle)
