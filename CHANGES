@@ -12,3 +12,4 @@
 20100311 code: imported installer 2.3.1
 20100311 code: imported installer 2.3.2
 20100311 code: imported new tools from cpj
+20100311 code: loadso_close() now assigns NULL to parameter on success.

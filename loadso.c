@@ -72,16 +72,19 @@ loadso_symbol (loadso_handle_t handle, const char *symbol, void **pointer)
 }
 
 int
-loadso_close (loadso_handle_t handle)
+loadso_close (loadso_handle_t *handle)
 {
+  int r = 0;
   assert (handle != NULL);
 
 #if defined(SD_HAVE_DLOPEN)
-  return loadso_dlopen_close (handle);
+  r = loadso_dlopen_close (*handle);
 #elif SD_SYSINFO_OS == SD_SYSINFO_OS_MS_WINDOWS
-  return loadso_win32_close (handle);
+  r = loadso_win32_close (*handle);
+#else
+  loadso_set_error ("function not implemented on this platform");
 #endif
 
-  loadso_set_error ("function not implemented on this platform");
-  return 0;
+  if (r != 0) *handle = NULL;
+  return r;
 }
