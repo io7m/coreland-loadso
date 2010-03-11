@@ -1,3 +1,7 @@
+/*
+ * version: installer 2.3.2
+ */
+
 #define INSTALL_IMPLEMENTATION
 #include "install.h"
 
@@ -68,8 +72,10 @@ iposix_gid_format (char *buffer, group_id_t gid)
 {
   assert (buffer != NULL);
 
-  unsigned int size = snprintf (buffer, INSTALL_FMT_GID, "%d", gid.value);
-  return size;
+  {
+    unsigned int size = snprintf (buffer, INSTALL_FMT_GID, "%d", gid.value);
+    return size;
+  }
 }
 
 static unsigned int
@@ -78,8 +84,10 @@ iposix_gid_scan (const char *buffer, group_id_t *gid)
   assert (buffer != NULL);
   assert (gid    != NULL);
 
-  unsigned int size = sscanf (buffer, "%d", &gid->value);
-  return size;
+  {
+    unsigned int size = sscanf (buffer, "%d", &gid->value);
+    return size;
+  }
 }
 
 static int
@@ -133,8 +141,10 @@ iposix_uid_format (char *buffer, user_id_t uid)
 {
   assert (buffer != NULL);
 
-  unsigned int size = snprintf (buffer, INSTALL_FMT_UID, "%d", uid.value);
-  return size;
+  {
+    unsigned int size = snprintf (buffer, INSTALL_FMT_UID, "%d", uid.value);
+    return size;
+  }
 }
 
 static unsigned int
@@ -143,8 +153,10 @@ iposix_uid_scan (const char *buffer, user_id_t *uid)
   assert (buffer != NULL);
   assert (uid    != NULL);
 
-  unsigned int size = sscanf (buffer, "%d", &uid->value);
-  return size;
+  {
+    unsigned int size = sscanf (buffer, "%d", &uid->value);
+    return size;
+  }
 }
 
 static int
