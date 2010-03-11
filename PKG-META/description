@@ -1,1 +1,13 @@
-Dynamic library loader abstraction.
+<p>
+This package provides a portable abstraction around the various
+dynamic library/symbol loading interfaces on various platforms.
+</p>
+<p>
+It currently provides a uniform interface around:
+</p>
+<p>
+<ul>
+  <li><span><span class="package">dlfcn</span> - <span class="c_function">dlopen()</span>, <span class="c_function">dlsym()</span> on POSIX platforms.</span></li>
+  <li><span><span class="c_function">LoadLibrary()</span>, <span class="c_function">GetProcAddress()</span> on Windows.</span></li>
+</ul>
+</p>
