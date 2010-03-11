@@ -13,10 +13,11 @@
 #include <assert.h>
 #include <stddef.h>
 
+static char loadso_win32_error_buffer [8192];
+
 static const char *
 loadso_win32_error_message (void)
 {
-  static char buffer [8192];
   DWORD error_code = GetLastError ();
 
   if (error_code != 0) {
@@ -28,11 +29,10 @@ loadso_win32_error_message (void)
       (LPTSTR) buffer,
       sizeof (buffer),
       0);
+    return buffer;
   } else {
-    buffer [0] = 0;
+    return "no error";
   }
-
-  return buffer;
 }
 
 int
