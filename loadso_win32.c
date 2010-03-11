@@ -49,7 +49,8 @@ loadso_win32_close (loadso_handle_t handle)
 int
 loadso_win32_symbol (loadso_handle_t handle, const char *symbol, void **pointer)
 {
-  void *address;
+  FARPROC address;
+  sd_ptr_uint address_value;
 
   address = GetProcAddress (handle, symbol);
   if (address == NULL) {
@@ -57,14 +58,17 @@ loadso_win32_symbol (loadso_handle_t handle, const char *symbol, void **pointer)
     return 0;
   }
 
-  *pointer = address;
+  /* Subverting C function pointer <-> address rules. */
+  address_value = (sd_ptr_uint) address;
+  *pointer = (void *) address_value;
   return 1;
 }
 
 int
 loadso_win32_function (loadso_handle_t handle, const char *symbol, loadso_pointer_t *function)
 {
-  void *address;
+  FARPROC address;
+  sd_ptr_uint address_value;
 
   address = GetProcAddress (handle, symbol);
   if (address == NULL) {
@@ -72,14 +76,16 @@ loadso_win32_function (loadso_handle_t handle, const char *symbol, loadso_pointe
     return 0;
   }
 
-  *function = address;
+  /* Subverting C function pointer <-> address rules. */
+  address_value = (sd_ptr_uint) address;
+  *function = (loadso_pointer_t) address_value;
   return 1;
 }
 
 int
 loadso_win32_open (const char *file, loadso_handle_t *handle)
 {
-  HMODULE *raw_handle;
+  HMODULE raw_handle;
 
   raw_handle = LoadLibrary (file);
   if (raw_handle == NULL) {
