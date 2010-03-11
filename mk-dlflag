@@ -1,8 +1,26 @@
 #!/bin/sh
 
+PROGRAM_NAME="mk-dlflag"
+
+warning()
+{
+  echo "${PROGRAM_NAME}: warn: $1" 1>&2
+}
+
+error()
+{
+  echo "${PROGRAM_NAME}: error: $1" 1>&2
+}
+
 fatal()
 {
-  echo "mk-dlflag: fatal: $1" 1>&2
+  echo "${PROGRAM_NAME}: fatal: $1" 1>&2
+  exit 1
+}
+
+fatal()
+{
+  echo "${PROGRAM_NAME}: fatal: $1" 1>&2
   exit 1
 }
 
@@ -48,6 +66,8 @@ else
 fi
 
 case "${CC_TYPE}" in
+  MINGW32)
+    ;;
   GCC)
     case "${SYS_TYPE}" in
       DARWIN)

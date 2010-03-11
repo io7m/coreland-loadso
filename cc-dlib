@@ -1,8 +1,26 @@
 #!/bin/sh
 
+PROGRAM_NAME="cc-dlib"
+
+warning()
+{
+  echo "${PROGRAM_NAME}: warn: $1" 1>&2
+}
+
+error()
+{
+  echo "${PROGRAM_NAME}: error: $1" 1>&2
+}
+
+fatal()
+{
+  echo "${PROGRAM_NAME}: fatal: $1" 1>&2
+  exit 1
+}
+
 if [ $# -lt 2 ]
 then
-  echo "cc-dlib: usage: [@dir] basename objects ..." 1>&2
+  echo "${PROGRAM_NAME}: usage: [@dir] basename objects ..." 1>&2
   exit 1
 fi
 
@@ -18,127 +36,186 @@ then
   shift
 fi
 
-LD_TYPE=`head -n 1 ${BASE_DIR}/conf-ldtype`
-if [ $? -ne 0 ]
+#
+# Assume cross-compilation if cross compilation tools are
+# defined.
+#
+
+if [ -f "${BASE_DIR}/conf-x-ld" ]
 then
-  fatal "could not read ${BASE_DIR}/conf-ldtype"
-fi
-LD=`head -n 1 ${BASE_DIR}/conf-ld`
-if [ $? -ne 0 ]
-then
-  fatal "could not read ${BASE_DIR}/conf-ld"
-fi
-SYS_TYPE=`head -n 1 ${BASE_DIR}/conf-systype`
-if [ $? -ne 0 ]
-then
-  fatal "could not read ${BASE_DIR}/conf-systype"
-fi
-SO_SUFFIX=`head -n 1 ${BASE_DIR}/conf-sosuffix`
-if [ $? -ne 0 ]
-then
-  fatal "could not read ${BASE_DIR}/conf-sosuffix"
+  ok=1
+
+  LD=`head -n 1 "${BASE_DIR}/conf-x-ld"`
+  if [ $? -ne 0 ]
+  then
+    error "could not read ${BASE_DIR}/conf-x-ld"
+    ok=0
+  fi
+  SYS_TYPE=`head -n 1 "${BASE_DIR}/conf-x-systype"`
+  if [ $? -ne 0 ]
+  then
+    error "could not read ${BASE_DIR}/conf-x-systype"
+    ok=0
+  fi
+  LD_TYPE=`head -n 1 "${BASE_DIR}/conf-x-ldtype"`
+  if [ $? -ne 0 ]
+  then
+    error "could not read ${BASE_DIR}/conf-x-ldtype"
+    ok=0
+  fi
+  LD_FLAGS="${LD_FLAGS} `head -n 1 ${BASE_DIR}/conf-x-ldflags 2>/dev/null`"
+
+  if [ $ok -eq 0 ]
+  then
+    fatal "could not read required configuration files for cross compilation"
+  fi
+
+else
+  if [ -f "${BASE_DIR}/conf-x-cc" ]
+  then
+    warning "conf-x-cc exists but conf-x-ld does not - native linker used for library creation"
+  fi
+
+  LD_TYPE=`head -n 1 ${BASE_DIR}/conf-ldtype`
+  if [ $? -ne 0 ]
+  then
+    fatal "could not read ${BASE_DIR}/conf-ldtype"
+  fi
+  LD=`head -n 1 ${BASE_DIR}/conf-ld`
+  if [ $? -ne 0 ]
+  then
+    fatal "could not read ${BASE_DIR}/conf-ld"
+  fi
+  SYS_TYPE=`head -n 1 ${BASE_DIR}/conf-systype`
+  if [ $? -ne 0 ]
+  then
+    fatal "could not read ${BASE_DIR}/conf-systype"
+  fi
+  SO_SUFFIX=`head -n 1 ${BASE_DIR}/conf-sosuffix`
+  if [ $? -ne 0 ]
+  then
+    fatal "could not read ${BASE_DIR}/conf-sosuffix"
+  fi
 fi
 
 main="$1"
 shift
 
-# read in optional flag files
+#
+# Read in optional flag files.
+#
+
 if [ -f "${main}.lff" ]
 then
   for f in `cat "${main}.lff"`
   do
     targ="`dirname $main`/`dirname $f`/`basename $f`"
     FLAGS="`cat $targ 2>/dev/null`"
-    LDFLAGS="${LDFLAGS} ${FLAGS}"
+    LD_FLAGS="${LD_FLAGS} ${FLAGS}"
   done
 fi
 
-# library name
-libname=`./mk-libname "${main}"`
+#
+# Library name.
+#
+
+LIBRARY_NAME=`./mk-libname "${main}"`
 if [ $? -ne 0 ]
 then
   fatal "could not execute ./mk-libname"
 fi
 
-# major version number
+#
+# Major version number.
+#
+
 if [ -f ${main}.vmj ]
 then
-  VMJ=`head -n 1 ${main}.vmj 2>/dev/null`
+  VERSION_MAJOR=`head -n 1 ${main}.vmj 2>/dev/null`
   if [ $? -ne 0 ]
   then
     fatal "could not read ${main}.vmj"
   fi
 fi
 
-# minor version number
+#
+# Minor version number.
+#
+
 if [ -f ${main}.vmn ]
 then
-  VMN=`head -n 1 ${main}.vmn 2>/dev/null`
+  VERSION_MINOR=`head -n 1 ${main}.vmn 2>/dev/null`
   if [ $? -ne 0 ]
   then
     fatal "could not read ${main}.vmn"
   fi
 fi
 
-rm -f "${libname}"
+rm -f "${LIBRARY_NAME}" || fatal "could not remove ${LIBRARY_NAME}"
 
 case "${LD_TYPE}" in
+  MINGW32)
+    ${LD} -shared -o "${LIBRARY_NAME}" ${1+"$@"} ${LD_FLAGS}
+    ;;
   GCC)
     case "${SYS_TYPE}" in
       DARWIN)
-        if [ ! -z ${vmj} ]
+        if [ ! -z ${VERSION_MAJOR} ]
         then
-          if [ ! -z ${vmn} ]
+          if [ ! -z ${VERSION_MINOR} ]
           then
-            ver="${vmj}.${vmn}.0"
+            LIBRARY_VERSION="${VERSION_MAJOR}.${VERSION_MINOR}.0"
           else
-            ver="${vmj}.0.0"
+            LIBRARY_VERSION="${VERSION_MAJOR}.0.0"
           fi
         else
-          ver="1.0.0"
+          LIBRARY_VERSION="1.0.0"
         fi
-        release=`uname -r | awk -F. '{print $1}'`
+
+        release=`uname -r | awk -F. '{print $1}'` ||
+          fatal "could not determine OS release"
+
         if [ ${release} -gt 7 ]
         then
           # the list of darwin compiler bugs makes impressive reading
           ${LD} -dynamiclib \
                 -flat_namespace \
                 -undefined suppress \
-                -current_version "${ver}" \
-                -install_name "${libname}" \
-                -o "${libname}" ${1+"$@"} ${LDFLAGS}
+                -current_version "${LIBRARY_VERSION}" \
+                -install_name "${LIBRARY_NAME}" \
+                -o "${LIBRARY_NAME}" ${1+"$@"} ${LD_FLAGS}
         else
           libtool -dynamic \
-            -current_version "${ver}" \
-            -install_name "${libname}" \
-            -o "${libname}" ${1+"$@"} ${LDFLAGS} -lc
+            -current_version "${LIBRARY_VERSION}" \
+            -install_name "${LIBRARY_NAME}" \
+            -o "${LIBRARY_NAME}" ${1+"$@"} ${LD_FLAGS} -lc
         fi
         ;;
       SUNOS)
-        ld -G -z text -o "${libname}" ${1+"$@"} ${LDFLAGS} -lc
+        ld -G -z text -o "${LIBRARY_NAME}" ${1+"$@"} ${LD_FLAGS} -lc
         ;;
       MS_WINDOWS)
-        ${LD} -shared -o "${libname}" ${1+"$@"} ${LDFLAGS}
+        ${LD} -shared -o "${LIBRARY_NAME}" ${1+"$@"} ${LD_FLAGS}
         ;;
       *)
-        ${LD} -shared -Wl,-soname,"${libname}" -o "${libname}" ${1+"$@"} ${LDFLAGS} -lc
+        ${LD} -shared -Wl,-soname,"${LIBRARY_NAME}" -o "${LIBRARY_NAME}" ${1+"$@"} ${LD_FLAGS} -lc
         ;;
     esac
     ;;
   HP_C)
-    ${LD} -b -o "${libname}" ${1+"$@"} ${LDFLAGS}
+    ${LD} -b -o "${LIBRARY_NAME}" ${1+"$@"} ${LD_FLAGS}
     ;;
   COMPAQ_C)
-    ${LD} -no_archive -shared -o "${libname}" ${1+"$@"} ${LDFLAGS}
+    ${LD} -no_archive -shared -o "${LIBRARY_NAME}" ${1+"$@"} ${LD_FLAGS}
     ;;
   INTEL)
-    ${LD} -shared -o "${libname}" ${1+"$@"} ${LDFLAGS}
+    ${LD} -shared -o "${LIBRARY_NAME}" ${1+"$@"} ${LD_FLAGS}
     ;;
   SUN_C)
-    ${LD} -G -z text -o "${libname}" ${1+"$@"} ${LDFLAGS}
+    ${LD} -G -z text -o "${LIBRARY_NAME}" ${1+"$@"} ${LD_FLAGS}
     ;;
   MIPSPRO)
-    ${LD} -shared -soname "${libname}" -o "${libname}" ${1+"$@"} ${LDFLAGS}
+    ${LD} -shared -soname "${LIBRARY_NAME}" -o "${LIBRARY_NAME}" ${1+"$@"} ${LD_FLAGS}
     ;;
   *)
     fatal "unknown compiler - cannot produce shared objects"
@@ -149,4 +226,5 @@ if [ $? -ne 0 ]
 then
   exit 1
 fi
-echo "${libname}" >> "${main}".vlb
+
+echo "${LIBRARY_NAME}" >> "${main}".vlb || fatal "could not write ${main}.vlb"

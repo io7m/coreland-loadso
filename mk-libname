@@ -1,14 +1,26 @@
 #!/bin/sh
 
+PROGRAM_NAME="mk-libname"
+
+warning()
+{
+  echo "${PROGRAM_NAME}: warn: $1" 1>&2
+}
+
+error()
+{
+  echo "${PROGRAM_NAME}: error: $1" 1>&2
+}
+
 fatal()
 {
-  echo "mk-libname: fatal: $1" 1>&2
+  echo "${PROGRAM_NAME}: fatal: $1" 1>&2
   exit 1
 }
 
 if [ $# -lt 1 ]
 then
-  echo "mk-libname: usage: basename" 1>&2
+  echo "${PROGRAM_NAME}: usage: basename" 1>&2
   exit 1
 fi
 
@@ -24,11 +36,26 @@ then
   shift
 fi
 
-SYS_TYPE=`head -n 1 "${BASE_DIR}/conf-systype"`
-if [ $? -ne 0 ]
+#
+# Assume cross-compilation if cross compilation tools are
+# defined.
+#
+
+if [ -f "${BASE_DIR}/conf-x-cc" ]
 then
-  fatal "could not read ${BASE_DIR}/conf-systype"
+  SYS_TYPE=`head -n 1 "${BASE_DIR}/conf-x-systype"`
+  if [ $? -ne 0 ]
+  then
+    fatal "could not read ${BASE_DIR}/conf-x-systype"
+  fi
+else
+  SYS_TYPE=`head -n 1 "${BASE_DIR}/conf-systype"`
+  if [ $? -ne 0 ]
+  then
+    fatal "could not read ${BASE_DIR}/conf-systype"
+  fi
 fi
+
 SO_SUFFIX=`head -n 1 "${BASE_DIR}/conf-sosuffix"`
 if [ $? -ne 0 ]
 then
@@ -38,22 +65,22 @@ fi
 main="$1"
 shift
 
-vmj=`head -n 1 ${main}.vmj 2>/dev/null`
-vmn=`head -n 1 ${main}.vmn 2>/dev/null`
+VERSION_MAJOR=`head -n 1 ${main}.vmj 2>/dev/null`
+VERSION_MINOR=`head -n 1 ${main}.vmn 2>/dev/null`
 
-if [ "x${vmj}" != "x" ]
+if [ ! -z "${VERSION_MAJOR}" ]
 then
-  if [ "x${vmn}" != "x" ]
+  if [ ! -z "${VERSION_MINOR}" ]
   then
     case "${SYS_TYPE}" in
       MS_WINDOWS)
         exec echo ${main}.${SO_SUFFIX}
         ;;
       DARWIN)
-        exec echo ${main}.${vmj}.${vmn}.${SO_SUFFIX}
+        exec echo ${main}.${VERSION_MAJOR}.${VERSION_MINOR}.${SO_SUFFIX}
         ;;
       *)
-        exec echo ${main}.${SO_SUFFIX}.${vmj}.${vmn}
+        exec echo ${main}.${SO_SUFFIX}.${VERSION_MAJOR}.${VERSION_MINOR}
         ;;
     esac
   else
@@ -62,10 +89,10 @@ then
         exec echo ${main}.${SO_SUFFIX}
         ;;
       DARWIN)
-        exec echo ${main}.${vmj}.${SO_SUFFIX}
+        exec echo ${main}.${VERSION_MAJOR}.${SO_SUFFIX}
         ;;
       *)
-        exec echo ${main}.${SO_SUFFIX}.${vmj}
+        exec echo ${main}.${SO_SUFFIX}.${VERSION_MAJOR}
         ;;
     esac
   fi
