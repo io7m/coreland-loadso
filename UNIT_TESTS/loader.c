@@ -52,8 +52,13 @@ main (int argc, char *argv[])
   printf ("info: test_str: %s\n", test_str);
 
   printf ("info: closing shared object\n");
-  if (!loadso_close (handle)) {
+  if (!loadso_close (&handle)) {
     printf ("error: loadso_close: %s\n", loadso_error());
+    return 112;
+  }
+
+  if (handle != NULL) {
+    printf ("error: handle not NULL after close\n");
     return 112;
   }
   return 0;
