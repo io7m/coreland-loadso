@@ -5,3 +5,4 @@ repos.o
 slibdir.o
 version.o
 libs_dlopen.o
+fakeroot.o
