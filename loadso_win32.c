@@ -26,10 +26,10 @@ loadso_win32_error_message (void)
       NULL,
       error_code,
       0,
-      (LPTSTR) buffer,
-      sizeof (buffer),
+      (LPTSTR) loadso_win32_error_buffer,
+      sizeof (loadso_win32_error_buffer),
       0);
-    return buffer;
+    return loadso_win32_error_buffer;
   } else {
     return "no error";
   }
