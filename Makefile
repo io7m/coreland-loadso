@@ -106,7 +106,7 @@ cc-slib:\
 conf-systype
 
 conf-cctype:\
-conf-cc conf-cc mk-cctype
+conf-cc mk-cctype
 	./mk-cctype > conf-cctype.tmp && mv conf-cctype.tmp conf-cctype
 
 conf-dlflag:\
@@ -114,7 +114,7 @@ mk-dlflag
 	./mk-dlflag > conf-dlflag.tmp && mv conf-dlflag.tmp conf-dlflag
 
 conf-ldtype:\
-conf-ld conf-ld mk-ldtype
+conf-ld mk-ldtype
 	./mk-ldtype > conf-ldtype.tmp && mv conf-ldtype.tmp conf-ldtype
 
 conf-sosuffix:\
@@ -267,18 +267,18 @@ cc-slib loadso.sld loadso.o loadso_dlopen.o loadso_win32.o
 	./cc-slib loadso loadso.o loadso_dlopen.o loadso_win32.o
 
 loadso.h:\
-_sd_dlopen.h
+_sd_sysinfo.h _sd_dlopen.h
 
 loadso.o:\
 cc-compile loadso.c loadso.h
 	./cc-compile loadso.c
 
 loadso_dlopen.o:\
-cc-compile loadso_dlopen.c loadso.h _sd_dlopen.h _sd_ptr_uint.h
+cc-compile loadso_dlopen.c loadso.h _sd_ptr_uint.h
 	./cc-compile loadso_dlopen.c
 
 loadso_win32.o:\
-cc-compile loadso_win32.c _sd_sysinfo.h loadso.h _sd_ptr_uint.h
+cc-compile loadso_win32.c loadso.h _sd_ptr_uint.h
 	./cc-compile loadso_win32.c
 
 mk-cctype:\

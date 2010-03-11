@@ -1,7 +1,6 @@
 #define LOADSO_IMPLEMENTATION 1
 
 #include "loadso.h"
-#include "_sd_dlopen.h"
 
 /*
  * dlopen/dlfunc

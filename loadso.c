@@ -30,6 +30,8 @@ loadso_function (loadso_handle_t handle, const char *symbol, loadso_pointer_t *f
 
 #if defined(SD_HAVE_DLOPEN)
   return loadso_dlopen_function (handle, symbol, function);
+#elif SD_SYSINFO_OS == SD_SYSINFO_OS_MS_WINDOWS
+  return loadso_win32_function (handle, symbol, function);
 #endif
 
   loadso_set_error ("function not implemented on this platform");
@@ -44,6 +46,8 @@ loadso_open (const char *file, loadso_handle_t *handle)
 
 #if defined(SD_HAVE_DLOPEN)
   return loadso_dlopen_open (file, handle);
+#elif SD_SYSINFO_OS == SD_SYSINFO_OS_MS_WINDOWS
+  return loadso_win32_open (file, handle);
 #endif
 
   loadso_set_error ("function not implemented on this platform");
@@ -59,6 +63,8 @@ loadso_symbol (loadso_handle_t handle, const char *symbol, void **pointer)
 
 #if defined(SD_HAVE_DLOPEN)
   return loadso_dlopen_symbol (handle, symbol, pointer);
+#elif SD_SYSINFO_OS == SD_SYSINFO_OS_MS_WINDOWS
+  return loadso_win32_symbol (handle, symbol, pointer);
 #endif
 
   loadso_set_error ("function not implemented on this platform");
@@ -72,6 +78,8 @@ loadso_close (loadso_handle_t handle)
 
 #if defined(SD_HAVE_DLOPEN)
   return loadso_dlopen_close (handle);
+#elif SD_SYSINFO_OS == SD_SYSINFO_OS_MS_WINDOWS
+  return loadso_win32_close (handle);
 #endif
 
   loadso_set_error ("function not implemented on this platform");

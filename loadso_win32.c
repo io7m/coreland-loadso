@@ -1,6 +1,5 @@
 #define LOADSO_IMPLEMENTATION 1
 
-#include "_sd_sysinfo.h"
 #include "loadso.h"
 
 /*
