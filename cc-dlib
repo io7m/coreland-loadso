@@ -153,32 +153,66 @@ fi
 
 rm -f "${LIBRARY_NAME}" || fatal "could not remove ${LIBRARY_NAME}"
 
+#
+# OS specifics (independent of linker).
+#
+
+case "${SYS_TYPE}" in
+  DARWIN)
+    if [ ! -z ${VERSION_MAJOR} ]
+    then
+      if [ ! -z ${VERSION_MINOR} ]
+      then
+        LIBRARY_VERSION="${VERSION_MAJOR}.${VERSION_MINOR}.0"
+      else
+        LIBRARY_VERSION="${VERSION_MAJOR}.0.0"
+      fi
+    else
+      LIBRARY_VERSION="1.0.0"
+    fi
+    DARWIN_RELEASE=`uname -r | awk -F. '{print $1}'` ||
+      fatal "could not determine Darwin OS version"
+    ;;
+  *)
+    ;;
+esac
+
+#
+# Linker specifics.
+#
+
 case "${LD_TYPE}" in
   MINGW32)
     ${LD} -shared -o "${LIBRARY_NAME}" ${1+"$@"} ${LD_FLAGS}
     ;;
   LLVM)
-    ${LD} -shared -Wl,-soname,"${LIBRARY_NAME}" -o "${LIBRARY_NAME}" ${1+"$@"} ${LD_FLAGS} -lc
+    case "${SYS_TYPE}" in
+      DARWIN)
+        if [ ${DARWIN_RELEASE} -gt 7 ]
+        then
+          # The list of darwin compiler bugs makes impressive reading.
+          ${LD} -dynamiclib \
+                -flat_namespace \
+                -undefined suppress \
+                -current_version "${LIBRARY_VERSION}" \
+                -install_name "${LIBRARY_NAME}" \
+                -o "${LIBRARY_NAME}" ${1+"$@"} ${LD_FLAGS}
+        else
+          libtool -dynamic \
+            -current_version "${LIBRARY_VERSION}" \
+            -install_name "${LIBRARY_NAME}" \
+            -o "${LIBRARY_NAME}" ${1+"$@"} ${LD_FLAGS} -lc
+        fi
+        ;;
+      *)
+        ${LD} -shared -Wl,-soname,"${LIBRARY_NAME}" -o "${LIBRARY_NAME}" ${1+"$@"} ${LD_FLAGS} -lc
+        ;;
+    esac
     ;;
   GCC)
     case "${SYS_TYPE}" in
       DARWIN)
-        if [ ! -z ${VERSION_MAJOR} ]
-        then
-          if [ ! -z ${VERSION_MINOR} ]
-          then
-            LIBRARY_VERSION="${VERSION_MAJOR}.${VERSION_MINOR}.0"
-          else
-            LIBRARY_VERSION="${VERSION_MAJOR}.0.0"
-          fi
-        else
-          LIBRARY_VERSION="1.0.0"
-        fi
-
-        release=`uname -r | awk -F. '{print $1}'` ||
-          fatal "could not determine OS release"
-
-        if [ ${release} -gt 7 ]
+        if [ ${DARWIN_RELEASE} -gt 7 ]
         then
           # the list of darwin compiler bugs makes impressive reading
           ${LD} -dynamiclib \
