@@ -68,6 +68,9 @@ fi
 case "${CC_TYPE}" in
   MINGW32)
     ;;
+  LLVM)
+    echo '-fPIC'
+    ;;
   GCC)
     case "${SYS_TYPE}" in
       DARWIN)

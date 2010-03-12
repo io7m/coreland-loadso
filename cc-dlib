@@ -157,6 +157,9 @@ case "${LD_TYPE}" in
   MINGW32)
     ${LD} -shared -o "${LIBRARY_NAME}" ${1+"$@"} ${LD_FLAGS}
     ;;
+  LLVM)
+    ${LD} -shared -Wl,-soname,"${LIBRARY_NAME}" -o "${LIBRARY_NAME}" ${1+"$@"} ${LD_FLAGS} -lc
+    ;;
   GCC)
     case "${SYS_TYPE}" in
       DARWIN)
