@@ -5,9 +5,9 @@ dynamic library/symbol loading interfaces on various platforms.
 <p>
 It currently provides a uniform interface around:
 </p>
-<p>
+<div>
 <ul>
   <li><span><span class="package">dlfcn</span> - <span class="c_function">dlopen()</span>, <span class="c_function">dlsym()</span> on POSIX platforms.</span></li>
   <li><span><span class="c_function">LoadLibrary()</span>, <span class="c_function">GetProcAddress()</span> on Windows.</span></li>
 </ul>
-</p>
+</div>
